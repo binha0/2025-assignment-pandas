@@ -17,7 +17,7 @@ def load_data():
     """Load data from the CSV files referundum/regions/departments."""
     regions = pd.read_csv("data/regions.csv", sep=",")
     departments = pd.read_csv("data/departments.csv", sep=",")
-    referendum = pd.read_csv("data/referendum.csv", sep =';')
+    referendum = pd.read_csv("data/referendum.csv", sep=';')
     return referendum, regions, departments
 
 
@@ -95,9 +95,6 @@ def plot_referendum_map(referendum_result_by_regions):
     ref_map = gpd.read_file('data/regions.geojson')  # load geodata
 
     ref_map.columns = ['code_reg', 'nom', 'geometry']
-
-    if 'code_reg' not in referendum_result_by_regions.columns:
-        referendum_result_by_regions = referendum_result_by_regions.reset_index()
 
     merged_results = ref_map.merge(referendum_result_by_regions,
                                    on='code_reg', how='left')

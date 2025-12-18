@@ -114,4 +114,3 @@ def test_plot_referendum_map():
     assert 'ratio' in gdf_referendum.columns
     gdf_referendum = gdf_referendum.set_index('name_reg')
     assert np.isclose(gdf_referendum['ratio'].loc['Normandie'], 0.427467)
-    
