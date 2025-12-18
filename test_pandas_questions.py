@@ -114,9 +114,4 @@ def test_plot_referendum_map():
     assert 'ratio' in gdf_referendum.columns
     gdf_referendum = gdf_referendum.set_index('name_reg')
     assert np.isclose(gdf_referendum['ratio'].loc['Normandie'], 0.427467)
-
-test_load_data()
-test_merge_regions_and_departments()
-test_merge_referendum_and_area()
-test_compute_referendum_result_by_regions()
-test_plot_referendum_map()
+    

@@ -11,7 +11,6 @@ aggregate them by regions and finally plot them on a map using `geopandas`.
 import pandas as pd
 import geopandas as gpd
 import matplotlib.pyplot as plt
-import numpy as np
 
 
 def load_data():
@@ -30,7 +29,8 @@ def merge_regions_and_departments(regions, departments):
     """
     merged_df = pd.merge(regions, departments, "right", left_on='code',
                          right_on='region_code')
-    merged_df = merged_df.set_index('id_x')[['code_x', 'name_x', 'code_y', 'name_y']]
+    merged_df = merged_df.set_index('id_x')[['code_x', 'name_x',
+                                             'code_y', 'name_y']]
     merged_df.columns = ['code_reg', 'name_reg', 'code_dep', 'name_dep']
     return merged_df
 
@@ -49,13 +49,15 @@ def merge_referendum_and_areas(referendum, regions_and_departments):
             return x.split("0")[1]
         else:
             return x
-    regions_and_departments['code_dep'] = regions_and_departments['code_dep'].apply(correction_dep)
+    regions_and_departments['code_dep'] = regions_and_departments[
+        'code_dep'].apply(correction_dep)
 
     mask_z = referendum['Department code'].astype(str).str.startswith('Z')
     referendum = referendum.loc[~mask_z].copy()
 
     merged_df = pd.merge(referendum, regions_and_departments,
-                         how='left', left_on='Department code', right_on='code_dep')
+                         how='left', left_on='Department code',
+                         right_on='code_dep')
     merged_df = merged_df.dropna()
     return merged_df
 
@@ -87,17 +89,18 @@ def plot_referendum_map(referendum_result_by_regions):
     * Load the geographic data with geopandas from `regions.geojson`.
     * Merge these info into `referendum_result_by_regions`.
     * Use the method `GeoDataFrame.plot` to display the result map. The results
-      should display the rate of 'Choice A' over all expressed ballots.
+        should display the rate of 'Choice A' over all expressed ballots.
     * Return a gpd.GeoDataFrame with a column 'ratio' containing the results.
     """
-    ref_map = gpd.read_file('data/regions.geojson') # load geodata
+    ref_map = gpd.read_file('data/regions.geojson')  # load geodata
 
     ref_map.columns = ['code_reg', 'nom', 'geometry']
 
     if 'code_reg' not in referendum_result_by_regions.columns:
         referendum_result_by_regions = referendum_result_by_regions.reset_index()
 
-    merged_results = ref_map.merge(referendum_result_by_regions, on='code_reg', how='left')
+    merged_results = ref_map.merge(referendum_result_by_regions,
+                                   on='code_reg', how='left')
 
     remove = ['Guadeloupe', 'Martinique', 'Guyane', 'La Réunion', 'Mayotte']
     merged_results = merged_results[~merged_results['nom'].isin(remove)].copy()
